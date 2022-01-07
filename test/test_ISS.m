@@ -1,8 +1,9 @@
-%% Test InterSpikeSpectra functionality
+% Test InterSpikeSpectra functionality
 
 clear, clc
 
-% 2 spikes, no noise
+cd ../private/
+% preconditions
 rng(1234)
 N = 50;
 period1 = 13;
@@ -14,8 +15,10 @@ test_tauRR_ = 0.8 .* test_tauRR3(7,:);
 test_tauRR = test_tauRR + test_tauRR_;
 test_tauRR = test_tauRR + 0.05.*randn(1,N);
 
-[~, rho] = inter_spike_spectrum(test_tauRR, 0.85);
+cd ../
 
+%% Test 1: 2 Spikes + measurement noise
+[~, rho] = inter_spike_spectrum(test_tauRR, 0.85);
 assert(0.83 <= rho && rho < 0.89)
 
 [spectrum, rho] = inter_spike_spectrum(test_tauRR, 0.99);
@@ -29,7 +32,7 @@ assert(length(peak_idxs) == 2)
 assert(peak_idxs(1) == period2)
 assert(peak_idxs(2) == period1)
 
-% randomized peak heights
+%% Test 2: randomized peak heights
 rng(1234)
 test_tauRR = abs(randn(1,N)) .* test_tauRR2(1,:);
 [spectrum, ~] = inter_spike_spectrum(test_tauRR);

@@ -36,7 +36,10 @@ jobs:
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
-
+      - uses: matlab-actions/setup-matlab@v1
+        with:
+          version: ${{ matrix.version }}
+          arch: ${{ matrix.arch }}
       # Runs a single command using the runners shell
       - name: Testing basic functionality
-        run: cd ../../test/; matlab -batch 'test_ISS'
+      - uses: matlab-actions/run-tests@v1
