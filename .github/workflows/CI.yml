@@ -35,11 +35,12 @@ jobs:
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v2
-      - uses: matlab-actions/setup-matlab@v1
+      - name: Check out Repo
+        uses: actions/checkout@v2
+      - name: Set up Matlab
+        uses: matlab-actions/setup-matlab@v1
         with:
           version: ${{ matrix.version }}
           arch: ${{ matrix.arch }}
-      # Runs a single command using the runners shell
       - name: Testing basic functionality
-      - uses: matlab-actions/run-tests@v1
+        uses: matlab-actions/run-tests@v1
