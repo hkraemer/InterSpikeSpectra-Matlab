@@ -19,15 +19,16 @@ concurrency:
 jobs:
   test:
     name: Matlab ${{ matrix.release }} - ${{ matrix.os }} - ${{ github.event_name }}
-    runs-on: ${{ matrix.os }}
+    #runs-on: ${{ matrix.os }}
+    runs-on: [self-hosted, ${{ matrix.os }}]
     strategy:
       fail-fast: false
       matrix:
         release:
-          - 'latest'
-          - 'R2020a'
+          #- 'latest'
+          - 'R2020b'
         os:
-          - ubuntu-latest
+          - macOS
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
