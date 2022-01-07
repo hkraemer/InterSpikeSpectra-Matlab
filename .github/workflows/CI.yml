@@ -19,13 +19,11 @@ concurrency:
 jobs:
   test:
     name: Matlab ${{ matrix.release }} - ${{ matrix.os }} - ${{ github.event_name }}
-    #runs-on: ${{ matrix.os }}
     runs-on: [self-hosted, ${{ matrix.os }}]
     strategy:
       fail-fast: false
       matrix:
         release:
-          #- 'latest'
           - 'R2020b'
         os:
           - macOS
