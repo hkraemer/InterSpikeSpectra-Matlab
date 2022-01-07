@@ -18,13 +18,26 @@ concurrency:
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   test:
-    name: Run Matlab ISS tests - ${{ github.event_name }}
-    runs-on: self-hosted
+    name: Matlab ${{ matrix.release }} - ${{ matrix.os }} - ${{ github.event_name }}
+    #runs-on: ${{ matrix.os }}
+    runs-on: [self-hosted, ${{ matrix.os }}]
+    strategy:
+      fail-fast: false
+      matrix:
+        release:
+        #  - 'latest'
+          - 'R2020b'
+        os:
+          - macOS
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - name: Check out Repo
         uses: actions/checkout@v2
+      - name: Set up Matlab
+        uses: matlab-actions/setup-matlab@v1
+        with:
+          release: ${{ matrix.release }}
       - name: Testing basic functionality
         uses: matlab-actions/run-tests@v1
