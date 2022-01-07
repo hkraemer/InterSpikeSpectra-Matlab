@@ -37,6 +37,6 @@ jobs:
       - name: Set up Matlab
         uses: matlab-actions/setup-matlab@v1
         with:
-          version: ${{ matrix.release }}
+          release: ${{ matrix.release }}
       - name: Testing basic functionality
         uses: matlab-actions/run-tests@v1
