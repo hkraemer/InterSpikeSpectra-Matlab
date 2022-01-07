@@ -23,7 +23,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        version:
+        release:
           - 'latest'
           - 'R2020a'
         os:
