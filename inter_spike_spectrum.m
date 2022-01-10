@@ -56,8 +56,8 @@ catch
     tol = 1e-3;
 end
 assert(isnumeric(tol), "Optional input `tol` must be numeric.")
-assert(tol > 1e-5, "Optional input `tol` must be a value in the interval (1e-5, 1]")
-assert(tol <=1, "Optional input `tol` must be a value in the interval (1e-5, 1]")
+assert(tol > 1e-5, "Optional input `tol` must be a value in the interval [1e-5, 1]")
+assert(tol <=1, "Optional input `tol` must be a value in the interval [1e-5, 1]")
 
 
 try

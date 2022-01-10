@@ -24,7 +24,7 @@ while flag
     y = lasso(Theta, s, 'Lambda', lambda_f);
     % check whether the regenerated signal matches with the given threshold
     rr = corrcoef(regenerate_signal(Theta, y), s);
-
+    
     % check whether upper limit is reached or convergence is fullfilled
     if isnan(rr(2)) || (rr(2) - threshold) < 0
         upper = true;
