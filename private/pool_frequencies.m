@@ -1,4 +1,5 @@
 function spectrum = pool_frequencies(y,N)
+y = abs(y);
 % pool the same frequencies
 spectrum = zeros(1,N);
 cnt = 1;
@@ -11,5 +12,4 @@ for i = 1:N
     end
     cnt = cnt + i;
 end
-
 end
