@@ -1,56 +1,50 @@
 function [spectrum, rho] = inter_spike_spectrum(s, varargin)
 % INTER_SPIKE_SPECTRUM spike decomposition.
 %
-% computes the inter spike spectrum from the input
-% signal `s` (column or line vector). 
+%    S=INTER_SPIKE_SPECTRUM(X) computes the inter spike spectrum S
+%    from the input signal X (column or line vector). 
 %
-%    spectrum = INTER_SPIKE_SPECTRUM(X) computes the inter spike spectrum 
-%    from the input signal `X` (column or line vector).
-%
-%    [spectrum, rho] = INTER_SPIKE_SPECTRUM(...) computes the inter spike 
-%    spectrum from the input signal `X` (column or line vector) and the 
-%    correlation coefficient `rho` of the retransformed decomposed signal 
-%    and `X`. 
+%    [S, R]=INTER_SPIKE_SPECTRUM(...) computes the inter spike 
+%    spectrum S from the input signal X (column or line vector) and  
+%    the correlation coefficient R between the retransformed 
+%    decomposed signal and X. 
 %       
-%    ... = INTER_SPIKE_SPECTRUM(..., Name, Value) specifies further optional 
-%    parameters using one or more Name, Value pair arguments.
+%    ...=INTER_SPIKE_SPECTRUM(..., Name, Value) specifies further optional 
+%    parameters using one or more (Name, Value) pair arguments.
 %
 %    Optional name-value-arguments:
-%    'threshold'        - (default 0.95) The agreement of the regenerated 
-%                         decomposed signal with the true signal. This depends 
-%                         on the LASSO regularization parameter lambda. Lambda 
-%                         gets adjusted automatically with respect to 'threshold'.
-%   'tol'               - (default 1e-3) Allowed tolerance between 'threshold' and 
-%                         'rho'.
-%   'max_iter'          - (default 15) Determines after how many tried Lambdas 
-%                         the algorithm stops and must be an integer between 2 
-%                         and 20.
-%    'verbose'          - (default true) If true, warning messages enabled.
+%    'threshold' - (default 0.99) The agreement of the regenerated 
+%                  decomposed signal with the true signal. This depends 
+%                  on the LASSO regularization parameter lambda. Lambda 
+%                  gets adjusted automatically with respect to 'threshold'.
+%    'tol'       - (default 1e-3) Allowed tolerance between 'threshold' and R.
+%    'max_iter'  - (default 15) Determines after how many tried lambdas the
+%                  algorithm stops and must be an integer between 2 and 20.
+%    'verbose'   - (default true) If true, warning messages enabled.
 %
 %    Example:
-%    Compute the Inter Spike Spectrum of a monochromatic spike signal of spike 
+%    % Compute the Inter Spike Spectrum of a monochromatic spike signal of spike 
 %    period 5.
 %
-%    N = 50;                                         % signal length
+%    N = 100;                                         % signal length
 %    period = 5;                                     % spike  period
 %    s = zeros(1,N);       
 %    s(3:period:end) = 1;
-%    s = s * 0.3*randn(1,50);                        % randomize peak heights
-%    [spectrum, rho] = inter_spike_spectrum(s);
-%    figure
+%    s = s + 0.05.*randn(1,N);                        % randomize peak heights
+%    spectrum = inter_spike_spectrum(s);
 %    subplot(211)
-%    plot(1:N,s)
+%    plot(s)
 %    title('Signal')
 %    grid on
 %    subplot(212)
-%    plot(1:N,spectrum)
+%    area(spectrum)
 %    title('ISS of signal s')
 %    grid on
 % 
 %    Further reading:
 %    H. K. Kraemer et al., … 2022
 %
-%
+
 % Copyright (c) 2022-
 % K.Hauke Kraemer, Potsdam Institute for Climate Impact Research, Germany
 % http://www.pik-potsdam.de
@@ -68,7 +62,7 @@ narginchk(1,9)
 nargoutchk(1,2)
 
 % Default values
-threshold = 0.95;
+threshold = 0.99;
 tol = 1e-3;
 max_iter = 15;
 verbose = true;

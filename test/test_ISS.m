@@ -24,7 +24,7 @@ tol = 1e-3;
 assert(abs(rho - threshold) < tol)
 
 threshold = 0.99;
-[spectrum, rho] = inter_spike_spectrum(test_tauRR, 'threshold', threshold);
+[spectrum, rho] = inter_spike_spectrum(test_tauRR);
 
 [maxis, max_idx] = findpeaks(spectrum);
 t_idx = maxis > 0.1;
@@ -55,6 +55,7 @@ s(2:period1:end) = 1;
 
 [spectrum, rho] = inter_spike_spectrum(s);
 
+assert(max(spectrum)>0.999)
 assert(rho+ 1e-3 >= 1)
 [~, max_idx] = findpeaks(spectrum);
 assert(length(max_idx) == 1)

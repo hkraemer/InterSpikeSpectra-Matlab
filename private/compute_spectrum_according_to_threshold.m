@@ -7,17 +7,20 @@ lambda_step = 0.5;
 for i = 1:max_iter
     % check whether max iterations or tolerance-level reached
     if i == max_iter
-        if verbose
-            warning("Algorithm stopped due to maximum number of lambda's were tried without convergence to the specified `threshold`.")
-        end
         if rho_act > 1 - abs_tol
             spectrum_i = pool_frequencies(y_act, length(s));
             [spectrum, y] = compute_spectrum_according_to_actual_spectrum(spectrum_i, s, Theta, actual_lambda);
             rr = corrcoef(regenerate_signal(Theta, y), s);
             rho = rr(2);
+            if verbose
+                warning("Algorithm stopped due to maximum number of lambda's were tried without convergence to the specified `threshold`. Perfect Decomposition achieved.")
+            end            
         else    
             spectrum = pool_frequencies(y_act, length(s));
             rho = rho_act;
+            if verbose
+                warning("Algorithm stopped due to maximum number of lambda's were tried without convergence to the specified `threshold`.")
+            end
         end
         break
     elseif abs(rho_act - threshold) <= tol
