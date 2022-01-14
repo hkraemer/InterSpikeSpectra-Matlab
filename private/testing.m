@@ -7,16 +7,9 @@ clear, clc
 x = 0.7;
 a=3.55;
 for i = 2:200;x(i)=a*x(i-1)*(1-x(i-1));end
-[spectrum, rho] = inter_spike_spectrum(x(40:end), 'threshold', 0.99);
-area(spectrum)
-
-figure
-subplot(211)
-plot(1:length(x),x)
-grid on
-subplot(212)
-plot(1:length(x(40:end)),spectrum)
-grid on
+s = x;
+[spectrum, rho] = inter_spike_spectrum(s, 'threshold', 0.9);
+spectrum2 = spectrum ./ sum(spectrum);
 
 %%
 clear, clc
@@ -33,6 +26,29 @@ s(4:period3:end) = 1;
 s = s + (0.05.*randn(1,N));
 
 [spectrum, rho] = inter_spike_spectrum(s, 'threshold', 0.9);
+
+spectrum2 = spectrum ./ sum(spectrum);
+
+%%
+figure
+subplot(221)
+plot(1:length(s),s)
+grid on
+subplot(222)
+plot(1:length(s),s)
+grid on
+subplot(223)
+plot(1:length(s),spectrum)
+grid on
+subplot(224)
+plot(1:length(s),spectrum2)
+grid on
+
+%%
+
+
+
+
 [spectrum2, rho2] = inter_spike_spectrum(s);
 [spectrum3, rho3] = inter_spike_spectrum(s, 'threshold', 0.99);
 

@@ -9,6 +9,7 @@ for i = 1:max_iter
     % make the regression with specific lambda
     y = lasso(Theta, s, 'Lambda', actual_lambda);
     spectrum = pool_frequencies(y, length(s));
+    spectrum = spectrum ./ sum(spectrum);
     % check whether the spectrum matches with the initial spectrum (input)
     rr = corrcoef(spectrum, spectrum_i);
     
