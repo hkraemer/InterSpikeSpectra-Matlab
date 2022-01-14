@@ -7,7 +7,7 @@
     <param.summary />
     <param.description>Inter Spike Spectra from a sparse regression</param.description>
     <param.screenshot />
-    <param.version>1.1</param.version>
+    <param.version>1.2</param.version>
     <param.output>${PROJECT_ROOT}/InterSpikeSpectra-Matlab.mltbx</param.output>
     <param.products.name />
     <param.products.id />
@@ -22,7 +22,7 @@
 README.md
 %
 % A single file in a subfolder of the toolbox folder:
-% example/.svn
+private/testing.m
 %
 % All files in a subfolder of the toolbox folder:
 .github/*

@@ -1,0 +1,40 @@
+function spectrum = compute_spectrum_according_to_actual_spectrum(spectrum_i, s, Theta, lambda_max)
+max_iter = 10;  % precision
+lambda_min = 0;
+
+% bisection search
+for i = 1:max_iter
+    % check whether max iterations or tolerance-level reached
+    if i == max_iter
+        if verbose
+            warning("Algorithm stopped due to maximum number of lambda's were tried without convergence to the specified `threshold`.")
+        end
+        if rho_act > 1 - abs_tol      
+            spectrum = compute_spectrum_according_to_actual_spectrum(y_act, s, Theta, actual_lambda);
+            rho = rho_act;
+        else    
+            spectrum = pool_frequencies(y_act, length(s));
+            rho = rho_act;
+        end
+        break
+    elseif abs(rho_act - threshold) <= tol
+        spectrum = pool_frequencies(y_act, length(s));
+        rho = rho_act;
+        break
+    end
+    % try new lambda
+    actual_lambda = lambda_min + (lambda_max - lambda_min)/2;  
+    % make the regression with specific lambda
+    y = lasso(Theta, s, 'Lambda', actual_lambda);
+    spectrum = pool_frequencies(y, length(s));
+    % check whether the spectrum matches with the initial spectrum (input)
+    rr = corrcoef(spectrum, spectrum_i);
+    
+    % pick the new bisection interval
+    if rr(2) > 1-abs_tol
+        lambda_max = actual_lambda;
+    elseif rr(2) < 1-abs_tol
+        lambda_min = actual_lambda;
+    end
+end
+end

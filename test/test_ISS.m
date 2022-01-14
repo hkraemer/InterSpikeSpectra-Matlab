@@ -38,7 +38,7 @@ assert(peak_idxs(2) == period1)
 %% Test 2: randomized peak heights
 rng(1234)
 threshold = 0.95;
-tol = 1e-2;
+tol = 1e-3;
 maxcycles = 20;
 test_tauRR = abs(randn(1,N)) .* test_tauRR2(1,:);
 [spectrum, ~] = inter_spike_spectrum(test_tauRR, 'threshold', threshold, 'tol', tol, 'max_iter', maxcycles);

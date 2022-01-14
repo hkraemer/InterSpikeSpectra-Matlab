@@ -1,5 +1,5 @@
 function [spectrum, rho] = compute_spectrum_according_to_threshold(s, Theta, threshold, tol, max_iter, verbose)
-
+abs_tol = 1e-6;
 % initial Lambda-step for estimating an upper bound for lambda
 lambda_step = 0.5;
 [lambda_max, lambda_min, y_act, rho_act] = find_lambda_max(s, Theta, lambda_step, threshold);
@@ -10,8 +10,15 @@ for i = 1:max_iter
         if verbose
             warning("Algorithm stopped due to maximum number of lambda's were tried without convergence to the specified `threshold`.")
         end
-        spectrum = pool_frequencies(y_act, length(s));
-        rho = rho_act;
+        if rho_act > 1 - abs_tol
+            spectrum_i = pool_frequencies(y_act, length(s));
+            [spectrum, y] = compute_spectrum_according_to_actual_spectrum(spectrum_i, s, Theta, actual_lambda);
+            rr = corrcoef(regenerate_signal(Theta, y), s);
+            rho = rr(2);
+        else    
+            spectrum = pool_frequencies(y_act, length(s));
+            rho = rho_act;
+        end
         break
     elseif abs(rho_act - threshold) <= tol
         spectrum = pool_frequencies(y_act, length(s));
@@ -19,7 +26,7 @@ for i = 1:max_iter
         break
     end
     % try new lambda
-    actual_lambda = lambda_min + (lambda_max - lambda_min)/2;
+    actual_lambda = lambda_min + (lambda_max - lambda_min)/2;  
     % make the regression with specific lambda
     y = lasso(Theta, s, 'Lambda', actual_lambda);
     % check whether the regenerated signal matches with the given threshold

@@ -1,64 +1,103 @@
-clear, clc
+clc, clear
 
-rng(1234)
-N = 50;
-period1 = 13;
-period2 = 8;
-test_tauRR2 = create_single_basis_function(N, period1);
-test_tauRR3 = create_single_basis_function(N, period2);
-test_tauRR = 0.7 .* test_tauRR2(3,:);
-test_tauRR_ = 0.8 .* test_tauRR3(7,:);
-test_tauRR = test_tauRR + test_tauRR_;
-test_tauRR = test_tauRR + 0.05.*randn(1,N);
+% rng(1234)
+% N = 50;
+% period1 = 13;
+% period2 = 8;
+% test_tauRR2 = create_single_basis_function(N, period1);
+% test_tauRR3 = create_single_basis_function(N, period2);
+% test_tauRR = 0.7 .* test_tauRR2(3,:);
+% test_tauRR_ = 0.8 .* test_tauRR3(7,:);
+% test_tauRR = test_tauRR + test_tauRR_;
+% test_tauRR = test_tauRR + 0.05.*randn(1,N);
 
-%% Test 1: 2 Spikes + measurement noise
+N = 100;
+s = zeros(1,N);
+period1 = 20;
+s(2:period1:end) = 1;
+
+%s = test_tauRR;
+
+%%
+% normalize time series
+s = (s - mean(s)) ./ std(s);
+s = s - min(s);
+s = s ./ max(s);
+
+N = length(s);
+% get set of basis functions
+Theta = generate_basis_functions(N)';
+
+%%
+
+plot(s)
+
+%% 
 clc
-threshold = 0.85;
-tol = 1e-2;
-[~, rho] = inter_spike_spectrum(test_tauRR, threshold, tol);
-assert(abs(rho - threshold) < tol)
+lambda_step = 0.00001;
+lambda = 0;
+lambda_min = 0;
+rho_min = 1;
+y_min = zeros(1,size(Theta,2));
 
-threshold = 0.99;
-[spectrum, rho] = inter_spike_spectrum(test_tauRR, threshold, tol);
 
-[maxis, max_idx] = findpeaks(spectrum);
-t_idx = maxis > 0.1;
-peak_idxs = max_idx(t_idx);
+figure
+for i = 1:10
+    % make the regression with specific lambda
+    y = lasso(Theta, s, 'Lambda', lambda);
+    % check whether the regenerated signal matches with the given threshold
+    reg = regenerate_signal(Theta, y);
+    
+    spectrum = pool_frequencies(y, length(s));
+    if i == 1
+        rrr = 0;
+    else
+        rr = corrcoef(spectrum, spectrum_i);
+        rrr = rr(2);
+    end
+    spectrum_i = spectrum;
+    
+    subplot(5,2,i)
+    %plot(1:N,spectrum)
+    plot(1:N,s)
+    plot(1:N,reg,"r")
+    grid on
+    
+    title(strcat("\lambda=",num2str(lambda),"{}","{}","\rho=",num2str(rrr)))
+    
+%     if i == 1
+%         y_min(:) = y;
+%         rho_min = rr(2);
+%     end
+% 
+%     if rr(2) > rho_thres
+%         lambda_min = lambda;
+%         y_min(:) = y;
+%         rho_min = rr(2);
+%     elseif isnan(rr(2)) || rr(2) <= rho_thres
+%         break
+%     end
+    lambda = lambda + lambda_step;
+end
 
-assert(abs(rho - threshold) < tol)
-assert(length(peak_idxs) == 2)
-assert(peak_idxs(1) == period2)
-assert(peak_idxs(2) == period1)
 
-%% Test 2: randomized peak heights
-rng(1234)
-threshold = 0.95;
-tol = 1e-1;
-maxcycles = 100;
-test_tauRR = abs(randn(1,N)) .* test_tauRR2(1,:);
-[spectrum, ~] = inter_spike_spectrum(test_tauRR, threshold, tol, maxcycles);
+%%
 
-[maxis, max_idx] = findpeaks(spectrum);
-t_idx = maxis > 0.001;
-peak_idxs = max_idx(t_idx);
+%%
+clc
+[spectrum, rho] = inter_spike_spectrum(s, 'max_iter',20);
+rho
+figure
+subplot(211)
+plot(1:N,s)
+grid on
+subplot(212)
+plot(1:N,spectrum)
+grid on
 
-assert(sum(rem(peak_idxs, period1)) == 0)
+%%
+spec_i = spectrum;
 
-%% Test 3: Random time series
-rng(1234)
-tol = 1e-4;
-maxcycles = 100;
-s = randn(1,50);
+%%
 
-threshold = 0.995;
-[spectrum1, rho] = inter_spike_spectrum(s, threshold, tol, maxcycles);
-[maxis, ~] = findpeaks(spectrum1);
-numpeaks1 = length(maxis);
-assert(abs(rho - threshold) <= tol)
 
-threshold = 0.85;
-[spectrum2, rho] = inter_spike_spectrum(s, threshold);
-[maxis, ~] = findpeaks(spectrum2);
-numpeaks2 = length(maxis);
-assert(abs(rho - threshold) <= 1e-3)
-assert(numpeaks2<numpeaks1)

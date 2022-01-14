@@ -1,0 +1,22 @@
+function [spectrum, y] = compute_spectrum_according_to_actual_spectrum(spectrum_i, s, Theta, lambda_max)
+abs_tol = 1e-6;
+max_iter = 10;  % precision
+lambda_min = 0;
+% bisection search
+for i = 1:max_iter
+    % try new lambda
+    actual_lambda = lambda_min + (lambda_max - lambda_min)/2;  
+    % make the regression with specific lambda
+    y = lasso(Theta, s, 'Lambda', actual_lambda);
+    spectrum = pool_frequencies(y, length(s));
+    % check whether the spectrum matches with the initial spectrum (input)
+    rr = corrcoef(spectrum, spectrum_i);
+    
+    % pick the new bisection interval
+    if rr(2) > 1-abs_tol
+        lambda_max = actual_lambda;
+    elseif rr(2) < 1-abs_tol
+        lambda_min = actual_lambda;
+    end
+end
+end
