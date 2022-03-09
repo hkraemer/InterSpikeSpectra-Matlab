@@ -1,47 +1,30 @@
 clc, clear
 
-%%
 
-clear, clc
-
-x = 0.7;
-a=3.55;
-for i = 2:200;x(i)=a*x(i-1)*(1-x(i-1));end
-s = x;
-[spectrum, rho] = inter_spike_spectrum(s, 'threshold', 0.9);
-spectrum2 = spectrum ./ sum(spectrum);
-
-%%
-clear, clc
-
-N=200;
-period1 = 22;
-period2 = 6;
-period3 = 9;
+N = 600;
+M = ceil(N/2);
+period1 = 3;
+period2 = 7;
+period3 = 14;
+period4 = 87;
 s = zeros(1,N);
-s(3:period1:end) = 1;
+s(2:period1:end) = 1;
 s(1:period2:end) = 1;
-s(4:period3:end) = 1;
+s(9:period3:end) = 1;
+s(8:period4:end) = 1;
 
-s = s + (0.05.*randn(1,N));
-
-[spectrum, rho] = inter_spike_spectrum(s, 'threshold', 0.9);
-
-spectrum2 = spectrum ./ sum(spectrum);
+%s = s + (0.05.*randn(1,N));
+tic
+[spectrum, rho] = inter_spike_spectrum(s, 'threshold', 0.85);
+toc
 
 %%
 figure
-subplot(221)
+subplot(211)
 plot(1:length(s),s)
 grid on
-subplot(222)
-plot(1:length(s),s)
-grid on
-subplot(223)
-plot(1:length(s),spectrum)
-grid on
-subplot(224)
-plot(1:length(s),spectrum2)
+subplot(212)
+plot(1:M,spectrum)
 grid on
 
 %%

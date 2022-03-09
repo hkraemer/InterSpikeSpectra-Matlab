@@ -13,6 +13,8 @@ function [spectrum, rho] = inter_spike_spectrum(s, varargin)
 %    parameters using one or more (Name, Value) pair arguments.
 %
 %    Optional name-value-arguments:
+%    'method'    - (default "lasso") The method for sparse regression. Pick 
+%                  either "lasso" or "STLS" (sequential thresholded least squares)
 %    'threshold' - (default 0.99) The agreement of the regenerated 
 %                  decomposed signal with the true signal. This depends 
 %                  on the LASSO regularization parameter lambda. Lambda 
@@ -58,7 +60,7 @@ function [spectrum, rho] = inter_spike_spectrum(s, varargin)
 % of the License, or any later version.
 
 %% Check input & output
-narginchk(1,9)
+narginchk(1,11)
 nargoutchk(1,2)
 
 % Default values
@@ -66,6 +68,7 @@ threshold = 0.99;
 tol = 1e-3;
 max_iter = 15;
 verbose = true;
+method = "lasso";
 
 % required and optional arguments
 p = inputParser;
@@ -75,9 +78,11 @@ validScalarPosNum1 = @(x) isnumeric(x) && isscalar(x) && (x >= 0.8) && (x <= 1);
 validScalarPosNum2 = @(x) isnumeric(x) && isscalar(x) && (x >= 1e-5) && (x <= 1);
 validScalarPosNum3 = @(x) isnumeric(x) && isscalar(x) && (x <= 20) && (x > 1);
 validScalarPosNum4 = @(x) islogical(x);
+validString = @(x) isstring(x) && (strcmp(x,"lasso") || strcmp(x,"STLS"));
 
 addRequired(p, 's', validScalarPosNum0);
 addParameter(p, 'threshold', threshold, validScalarPosNum1);
+addParameter(p, 'method', method, validString);
 addParameter(p, 'tol', tol, validScalarPosNum2);
 addParameter(p, 'max_iter', max_iter, validScalarPosNum3);
 addParameter(p, 'verbose', verbose, validScalarPosNum4);
@@ -91,6 +96,7 @@ threshold = p.Results.threshold;
 tol = p.Results.tol;
 max_iter = p.Results.max_iter;
 verbose = p.Results.verbose;
+method = p.Results.method;
 
 [N, M] = size(s);
 if N < M
@@ -108,7 +114,7 @@ s = s ./ max(s);
 N = length(s);
 % get set of basis functions
 Theta = generate_basis_functions(N)';
-% make LASSO regression
-[spectrum, rho] = compute_spectrum_according_to_threshold(s, Theta, threshold, tol, max_iter, verbose);
+% make sparse regression
+[spectrum, rho] = compute_spectrum_according_to_threshold_lasso(s, Theta, threshold, tol, max_iter, verbose);
 
 end

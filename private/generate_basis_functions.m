@@ -5,7 +5,7 @@ function basis = generate_basis_functions(N)
 %    basis = GENERATE_BASIS_FUNCTION(N) generates spike-trains (Dirac-Combs) 
 %    of all possible periods (=interspike interval), including all possible
 %    time shifts of those spike trains. This is a (M-by-N)-matrix, with M
-%    being `sum(1:N)`.
+%    being `sum(1:ceil(N/2))`.
 %
 %    Further reading:
 %    H. K. Kraemer et al., … 2021
@@ -26,10 +26,10 @@ assert(mod(N,1) == 0,"Input N must be a postive integer number")
 assert(N > 0,"Input N must be a postive integer number")
 
 %%
-num_of_basis_functions = sum(1:N);
+num_of_basis_functions = sum(1:ceil(N/2));
 basis = zeros(num_of_basis_functions, N);
 cnt = 1;
-for i = 1:N
+for i = 1:ceil(N/2)
    basis(cnt:cnt+i-1,:) = create_single_basis_function(N, i);
    cnt = cnt + i;
 end

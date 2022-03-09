@@ -1,4 +1,4 @@
-function [spectrum, y] = compute_spectrum_according_to_actual_spectrum(spectrum_i, s, Theta, lambda_max)
+function [spectrum, y] = compute_spectrum_according_to_actual_spectrum_lasso(spectrum_i, s, Theta, lambda_max)
 abs_tol = 1e-6;
 max_iter = 10;  % precision
 lambda_min = 0;
@@ -8,6 +8,7 @@ for i = 1:max_iter
     actual_lambda = lambda_min + (lambda_max - lambda_min)/2;  
     % make the regression with specific lambda
     y = lasso(Theta, s, 'Lambda', actual_lambda);
+    y = debias_coefficients(y_act, s, Theta); % coefficient debiasing
     spectrum = pool_frequencies(y, length(s));
     spectrum = spectrum ./ sum(spectrum);
     % check whether the spectrum matches with the initial spectrum (input)

@@ -20,9 +20,14 @@ cd ../
 %% Test 1: 2 Spikes + measurement noise
 threshold = 0.85;
 tol = 1e-3;
-[~, rho] = inter_spike_spectrum(test_tauRR, 'threshold', threshold, 'tol', tol);
+[spectrum, rho] = inter_spike_spectrum(test_tauRR, 'threshold', threshold, 'tol', tol);
+[maxis, max_idx] = findpeaks(spectrum);
 assert(abs(rho - threshold) < tol)
+assert(sum(max_idx == [period2, period1]) == 2)
+assert(0.513 < maxis(1) && maxis(1) < 0.514)
+assert(0.486 < maxis(2) && maxis(2) < 0.487)
 
+%%
 threshold = 0.99;
 [spectrum, rho] = inter_spike_spectrum(test_tauRR);
 
@@ -91,4 +96,9 @@ threshold = 0.85;
 [maxis, ~] = findpeaks(spectrum2);
 numpeaks2 = length(maxis);
 assert(abs(rho - threshold) <= 1e-3)
-assert(numpeaks2<numpeaks1)
+assert(numpeaks2>numpeaks1)
+assert(numpeaks2 == 7)
+assert(numpeaks1 == 5)
+assert(0.133 < maxis(1) && maxis(1) < 0.134)
+assert(0.129 < maxis(2) && maxis(2) < 0.13)
+
