@@ -110,6 +110,7 @@ s = s - min(s);
 s = s ./ max(s);
 
 %% Compute spectrum
+
 N = length(s);
 % get set of basis functions
 Theta = generate_basis_functions(N)';

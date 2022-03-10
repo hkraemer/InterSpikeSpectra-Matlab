@@ -1,35 +1,44 @@
 clc, clear
 
 
-N = 600;
+N = 300;
 M = ceil(N/2);
 period1 = 3;
 period2 = 7;
-period3 = 14;
-period4 = 87;
+% period3 = 13;
+% period4 = 30;
 s = zeros(1,N);
 s(2:period1:end) = 1;
 s(1:period2:end) = 1;
-s(9:period3:end) = 1;
-s(8:period4:end) = 1;
+%s(9:period3:end) = 1;
+%s(8:period4:end) = 1;
 
-%s = s + (0.05.*randn(1,N));
+rng(1)
+s = s + (0.00005.*randn(1,N));
+
+threshold = 0.9;
+
 tic
-[spectrum, rho] = inter_spike_spectrum(s, 'threshold', 0.85);
+[spectrum1, rho1] = inter_spike_spectrum(s, 'threshold', threshold);
 toc
 
-%%
+tic
+[spectrum2, rho2] = inter_spike_spectrum(s, 'threshold', threshold, 'method', "STLS");
+toc
+
+
 figure
-subplot(211)
+subplot(311)
 plot(1:length(s),s)
 grid on
-subplot(212)
-plot(1:M,spectrum)
+subplot(312)
+plot(1:M,spectrum1)
+grid on
+subplot(313)
+plot(1:M,spectrum2)
 grid on
 
 %%
-
-
 
 
 [spectrum2, rho2] = inter_spike_spectrum(s);
