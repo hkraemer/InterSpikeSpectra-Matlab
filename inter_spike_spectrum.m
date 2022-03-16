@@ -15,6 +15,8 @@ function [spectrum, rho] = inter_spike_spectrum(s, varargin)
 %    Optional name-value-arguments:
 %    'method'    - (default "lasso") The method for sparse regression. Pick 
 %                  either "lasso" or "STLS" (sequential thresholded least squares)
+%    'logit'     - (default true) Whether or not a logistic regression
+%                  should be made or not.
 %    'threshold' - (default 0.99) The agreement of the regenerated 
 %                  decomposed signal with the true signal. This depends 
 %                  on the LASSO regularization parameter lambda. Lambda 
@@ -60,7 +62,7 @@ function [spectrum, rho] = inter_spike_spectrum(s, varargin)
 % of the License, or any later version.
 
 %% Check input & output
-narginchk(1,11)
+narginchk(1,13)
 nargoutchk(1,2)
 
 % Default values
@@ -69,6 +71,7 @@ tol = 1e-3;
 max_iter = 15;
 verbose = true;
 method = "lasso";
+logit = true;
 
 % required and optional arguments
 p = inputParser;
@@ -86,6 +89,7 @@ addParameter(p, 'method', method, validString);
 addParameter(p, 'tol', tol, validScalarPosNum2);
 addParameter(p, 'max_iter', max_iter, validScalarPosNum3);
 addParameter(p, 'verbose', verbose, validScalarPosNum4);
+addParameter(p, 'logit', logit, validScalarPosNum4);
 
 % parse input arguments
 parse(p,s,varargin{:})
@@ -97,6 +101,7 @@ tol = p.Results.tol;
 max_iter = p.Results.max_iter;
 verbose = p.Results.verbose;
 method = p.Results.method;
+logit = p.Results.logit;
 
 [N, M] = size(s);
 if N < M
@@ -115,7 +120,11 @@ N = length(s);
 Theta = generate_basis_functions(N)';
 % make sparse regression
 if strcmp(method,"lasso")
-    [spectrum, rho] = compute_spectrum_according_to_threshold_lasso(s, Theta, threshold, tol, max_iter, verbose);
+    if logit
+        [spectrum, rho] = compute_spectrum_according_to_threshold_lasso_logit(s, Theta, threshold, tol, max_iter, verbose);
+    else
+        [spectrum, rho] = compute_spectrum_according_to_threshold_lasso(s, Theta, threshold, tol, max_iter, verbose);
+    end
 elseif strcmp(method,"STLS")
     [spectrum, rho] = compute_spectrum_according_to_threshold_stls(s, Theta, threshold, tol, max_iter, verbose);
 end

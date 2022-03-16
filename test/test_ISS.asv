@@ -123,23 +123,13 @@ assert(abs(rho1 - threshold) <= 1e-3)
 assert(abs(rho2 - threshold) <= 1e-3)
 assert(0.5633 < peaks1(1) && peaks1(1) < 0.5634)
 assert(0.4366 < peaks1(2) && peaks1(2) < 0.4367)
-assert(0.332 < peaks2(1) && peaks2(1) < 0.334)
-assert(0.665 < peaks2(2) && peaks2(2) < 0.667)
+assert(0.0333 < peaks2(1) && peaks2(1) < 0.0334)
+assert(0.0666 < peaks2(2) && peaks2(2) < 0.0667)
 assert(sum(peaks1_idx == [3,7])==2)
-assert(sum(peaks2_idx == [3,21])==2)
 
 threshold = 0.9;
 [spectrum1b, rho1b] = inter_spike_spectrum(s, 'threshold', threshold);
 [spectrum2b, rho2b] = inter_spike_spectrum(s, 'threshold', threshold, 'logit', false);
 
-[peaks1, peaks1_idx] = findpeaks(spectrum1b);
-[peaks2, peaks2_idx] = findpeaks(spectrum2b);
-
 assert(abs(rho1b - threshold) <= 1e-3)
 assert(abs(rho2b - threshold) <= 1e-3)
-assert(0.5633 < peaks1(1) && peaks1(1) < 0.5634)
-assert(0.4366 < peaks1(2) && peaks1(2) < 0.4367)
-assert(0.5633 < peaks2(1) && peaks2(1) < 0.5634)
-assert(0.4366 < peaks2(2) && peaks2(2) < 0.4367)
-assert(sum(peaks1_idx == [3,7])==2)
-assert(sum(peaks2_idx == [3,7])==2)

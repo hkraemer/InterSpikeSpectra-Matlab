@@ -51,7 +51,7 @@ for i = 1:max_iter
         y_act = debias_coefficients(y_act, s, Theta); % coefficient debiasing
         spectrum = pool_frequencies(y_act, length(s));
         spectrum = spectrum ./ sum(spectrum); % normalization
-        rho = rho_act;
+        rho = rho_act;        
         break
     end
 end
