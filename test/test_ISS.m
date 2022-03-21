@@ -27,18 +27,27 @@ assert(sum(max_idx == [period2, period1]) == 2)
 assert(0.513 < maxis(1) && maxis(1) < 0.514)
 assert(0.486 < maxis(2) && maxis(2) < 0.487)
 
-%%
+%% Lasso & Elastic Net
 threshold = 0.99;
 [spectrum, rho] = inter_spike_spectrum(test_tauRR, 'logit', false);
-
 [maxis, max_idx] = findpeaks(spectrum);
 t_idx = maxis > 0.1;
 peak_idxs = max_idx(t_idx);
 
+assert(length(max_idx) == 3)
 assert(abs(rho - threshold) < 1e-3)
 assert(length(peak_idxs) == 2)
 assert(peak_idxs(1) == period2)
 assert(peak_idxs(2) == period1)
+
+[spectrum, ~] = inter_spike_spectrum(test_tauRR, 'logit', false, 'Alpha', 0.5);
+[~, max_idx] = findpeaks(spectrum);
+assert(length(max_idx) == 4)
+assert(max_idx(1)==period2)
+assert(max_idx(2)==period1)
+assert(max_idx(3)==16)
+assert(max_idx(4)==19)
+
 
 %% Test 2: randomized peak heights
 rng(1234)

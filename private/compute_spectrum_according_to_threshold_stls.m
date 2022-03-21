@@ -46,42 +46,11 @@ for i = 1:max_iter
                 warning("Algorithm stopped due to maximum number of lambda's were tried without convergence to the specified `threshold`.")
             end
         end
-        %%%%%%%%%%
-        ss = regenerate_signal(Theta, y_act);
-        MM = length(s);
-        MM = 30;
-        MMM = length(ss);
-        MMM = 30;
-        figure
-        subplot(211)
-        plot(1:MM,s(1:MM))
-        title("STLS")
-        grid on
-        subplot(212)
-        plot(1:MMM,ss(1:MMM))
-        grid on
-        %%%%%%%%%%%%%
         break
     elseif abs(rho_act - threshold) <= tol
         spectrum = pool_frequencies(y_act, length(s));
         spectrum = spectrum ./ sum(spectrum); % normalization
         rho = rho_act;
-        
-        %%%%%%%%%%
-        ss = regenerate_signal(Theta, y_act);
-        MM = length(s);
-        MM = 30;
-        MMM = length(ss);
-        MMM = 30;
-        figure
-        subplot(211)
-        plot(1:MM,s(1:MM))
-        title("STLS")
-        grid on
-        subplot(212)
-        plot(1:MMM,ss(1:MMM))
-        grid on
-        %%%%%%%%%%%%%
         break
     end
 end

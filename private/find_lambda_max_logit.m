@@ -1,4 +1,4 @@
-function [lambda, lambda_min, y_min, rho_min] = find_lambda_max_logit(s, Theta, lambda_step, rho_thres)
+function [lambda, lambda_min, y_min, rho_min] = find_lambda_max_logit(s, Theta, lambda_step, rho_thres, alpha)
 % estimate a maximum λ-value for which the correlation coefficient form the re-
 % generated signal and the input signal falls below `ρ_thres` or is NaN.
 lambda = 0;
@@ -7,7 +7,7 @@ rho_min = 1;
 y_min = zeros(size(Theta,2),1);
 for i = 1:10000
     % make the regression with specific lambda
-    y = lassoglm(Theta, s, 'binomial', 'Lambda', lambda);
+    y = lassoglm(Theta, s, 'binomial', 'Lambda', lambda, 'Alpha', alpha);
     % check whether the regenerated signal matches with the given threshold
     rr = corrcoef(regenerate_signal_logit(Theta, y), s);
 

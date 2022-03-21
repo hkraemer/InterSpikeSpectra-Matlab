@@ -1,15 +1,15 @@
-function [spectrum, rho] = compute_spectrum_according_to_threshold_lasso(s, Theta, threshold, tol, max_iter, verbose)
+function [spectrum, rho] = compute_spectrum_according_to_threshold_lasso(s, Theta, threshold, tol, max_iter, alpha, verbose)
 abs_tol = 1e-6;
 % initial Lambda-step for estimating an upper bound for lambda
 lambda_step = 0.5;
-[lambda_max, lambda_min, y_act, rho_act] = find_lambda_max(s, Theta, lambda_step, threshold);
+[lambda_max, lambda_min, y_act, rho_act] = find_lambda_max(s, Theta, lambda_step, threshold, alpha);
 
 % bisection search
 for i = 1:max_iter    
     % try new lambda
     actual_lambda = lambda_min + (lambda_max - lambda_min)/2;  
     % make the regression with specific lambda
-    y = lasso(Theta, s, 'Lambda', actual_lambda);
+    y = lasso(Theta, s, 'Lambda', actual_lambda, 'Alpha', alpha);
     % check whether the regenerated signal matches with the given threshold
     rr = corrcoef(regenerate_signal(Theta, y), s);
     
@@ -31,7 +31,7 @@ for i = 1:max_iter
             y_act = debias_coefficients(y_act, s, Theta); % coefficient debiasing
             spectrum_i = pool_frequencies(y_act, length(s));
             spectrum_i = spectrum_i ./ sum(spectrum_i); % normalization
-            [spectrum, y] = compute_spectrum_according_to_actual_spectrum_lasso(spectrum_i, s, Theta, actual_lambda);
+            [spectrum, y] = compute_spectrum_according_to_actual_spectrum_lasso(spectrum_i, s, Theta, actual_lambda, alpha);
             rr = corrcoef(regenerate_signal(Theta, y), s);
             rho = rr(2);
             if verbose
