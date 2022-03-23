@@ -20,16 +20,19 @@ cd ../
 %% Test 1: 2 Spikes + measurement noise
 threshold = 0.85;
 tol = 1e-3;
-[spectrum, rho] = inter_spike_spectrum(test_tauRR, 'threshold', threshold, 'tol', tol, 'logit', false);
+[spectrum, rho] = inter_spike_spectrum(test_tauRR, 'threshold', threshold, 'tol', tol, 'type', "normal");
+[spectrum2, rho2] = inter_spike_spectrum(test_tauRR, 'threshold', threshold, 'tol', tol);
 [maxis, max_idx] = findpeaks(spectrum);
 assert(abs(rho - threshold) < tol)
 assert(sum(max_idx == [period2, period1]) == 2)
 assert(0.513 < maxis(1) && maxis(1) < 0.514)
 assert(0.486 < maxis(2) && maxis(2) < 0.487)
+assert(rho==rho2)
+assert(sum(spectrum==spectrum2)==length(spectrum))
 
 %% Lasso & Elastic Net
 threshold = 0.99;
-[spectrum, rho] = inter_spike_spectrum(test_tauRR, 'logit', false);
+[spectrum, rho] = inter_spike_spectrum(test_tauRR, 'type', "normal");
 [maxis, max_idx] = findpeaks(spectrum);
 t_idx = maxis > 0.1;
 peak_idxs = max_idx(t_idx);
@@ -40,7 +43,7 @@ assert(length(peak_idxs) == 2)
 assert(peak_idxs(1) == period2)
 assert(peak_idxs(2) == period1)
 
-[spectrum, ~] = inter_spike_spectrum(test_tauRR, 'logit', false, 'Alpha', 0.5);
+[spectrum, ~] = inter_spike_spectrum(test_tauRR, 'type', "normal", 'Alpha', 0.5);
 [~, max_idx] = findpeaks(spectrum);
 assert(length(max_idx) == 4)
 assert(max_idx(1)==period2)
@@ -55,7 +58,7 @@ threshold = 0.95;
 tol = 1e-3;
 maxcycles = 20;
 test_tauRR = abs(randn(1,N)) .* test_tauRR2(1,:);
-[spectrum, ~] = inter_spike_spectrum(test_tauRR, 'threshold', threshold, 'tol', tol, 'max_iter', maxcycles, 'logit', false);
+[spectrum, ~] = inter_spike_spectrum(test_tauRR, 'threshold', threshold, 'tol', tol, 'max_iter', maxcycles, 'type', "normal");
 
 [maxis, max_idx] = findpeaks(spectrum);
 t_idx = maxis > 0.000001;
@@ -67,7 +70,7 @@ s = zeros(1,100);
 period1 = 3;
 s(2:period1:end) = 1;
 
-[spectrum, rho] = inter_spike_spectrum(s, 'logit', false);
+[spectrum, rho] = inter_spike_spectrum(s, 'type', "normal");
 
 assert(max(spectrum)>0.999)
 assert(rho+ 1e-3 >= 1)
@@ -80,7 +83,7 @@ s(5:period2:end) = .8;
 
 tol = 1e-4;
 threshold = .99;
-[spectrum, rho] = inter_spike_spectrum(s, 'threshold', threshold, 'tol', tol, 'logit', false);
+[spectrum, rho] = inter_spike_spectrum(s, 'threshold', threshold, 'tol', tol, 'type', "normal");
 assert(abs(rho - threshold) < tol)
 [maxis, max_idx] = findpeaks(spectrum);
 assert(length(max_idx) == 2)
@@ -95,13 +98,13 @@ maxcycles = 20;
 s = randn(1,50);
 
 threshold = 0.995;
-[spectrum1, rho] = inter_spike_spectrum(s, 'threshold', threshold, 'tol', tol, 'max_iter', maxcycles, 'logit', false);
+[spectrum1, rho] = inter_spike_spectrum(s, 'threshold', threshold, 'tol', tol, 'max_iter', maxcycles, 'type', "normal");
 [maxis, ~] = findpeaks(spectrum1);
 numpeaks1 = length(maxis);
 assert(abs(rho - threshold) <= tol)
 
 threshold = 0.85;
-[spectrum2, rho] = inter_spike_spectrum(s, 'threshold', threshold, 'logit', false);
+[spectrum2, rho] = inter_spike_spectrum(s, 'threshold', threshold, 'type', "normal");
 [maxis, ~] = findpeaks(spectrum2);
 numpeaks2 = length(maxis);
 assert(abs(rho - threshold) <= 1e-3)
@@ -122,8 +125,8 @@ s(period1:period1:end) = 1;
 s(period2:period2:end) = 1;
 
 threshold = 0.99;
-[spectrum1, rho1] = inter_spike_spectrum(s, 'threshold', threshold);
-[spectrum2, rho2] = inter_spike_spectrum(s, 'threshold', threshold, 'logit', false);
+[spectrum1, rho1] = inter_spike_spectrum(s, 'threshold', threshold, 'type', "logit");
+[spectrum2, rho2] = inter_spike_spectrum(s, 'threshold', threshold, 'type', "normal");
 
 [peaks1, peaks1_idx] = findpeaks(spectrum1);
 [peaks2, peaks2_idx] = findpeaks(spectrum2);
@@ -138,8 +141,8 @@ assert(sum(peaks1_idx == [3,7])==2)
 assert(sum(peaks2_idx == [3,21])==2)
 
 threshold = 0.9;
-[spectrum1b, rho1b] = inter_spike_spectrum(s, 'threshold', threshold);
-[spectrum2b, rho2b] = inter_spike_spectrum(s, 'threshold', threshold, 'logit', false);
+[spectrum1b, rho1b] = inter_spike_spectrum(s, 'threshold', threshold, 'type', "logit");
+[spectrum2b, rho2b] = inter_spike_spectrum(s, 'threshold', threshold, 'type', "normal");
 
 [peaks1, peaks1_idx] = findpeaks(spectrum1b);
 [peaks2, peaks2_idx] = findpeaks(spectrum2b);

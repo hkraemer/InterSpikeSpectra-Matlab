@@ -15,8 +15,11 @@ function [spectrum, rho] = inter_spike_spectrum(s, varargin)
 %    Optional name-value-arguments:
 %    'method'    - (default "lasso") The method for sparse regression. Pick 
 %                  either "lasso" or "STLS" (sequential thresholded least squares)
-%    'logit'     - (default true) Whether or not a logistic regression
-%                  should be made or not.
+%    'type'     -  (default "auto") Whether or not a logistic regression
+%                  should be made or not. If not specified, the algorithm
+%                  automatically selects whether a logit or a normal
+%                  regression needs to be made. Possible Strings are
+%                  "auto", "logit" & "normal".
 %    'threshold' - (default 0.99) The agreement of the regenerated 
 %                  decomposed signal with the true signal. This depends 
 %                  on the LASSO regularization parameter lambda. Lambda 
@@ -75,7 +78,7 @@ tol = 1e-3;
 max_iter = 15;
 verbose = true;
 method = "lasso";
-logit = true;
+type = "auto";
 Alpha = 1;
 
 % required and optional arguments
@@ -88,6 +91,7 @@ validScalarPosNum3 = @(x) isnumeric(x) && isscalar(x) && (x <= 20) && (x > 1);
 validScalarPosNum4 = @(x) islogical(x);
 validScalarPosNum5 = @(x) isnumeric(x) && isscalar(x) && (x >= 0) && (x <= 1);
 validString = @(x) isstring(x) && (strcmp(x,"lasso") || strcmp(x,"STLS"));
+validString2 = @(x) isstring(x) && (strcmp(x,"auto") || strcmp(x,"normal") || strcmp(x,"logit"));
 
 addRequired(p, 's', validScalarPosNum0);
 addParameter(p, 'threshold', threshold, validScalarPosNum1);
@@ -95,7 +99,7 @@ addParameter(p, 'method', method, validString);
 addParameter(p, 'tol', tol, validScalarPosNum2);
 addParameter(p, 'max_iter', max_iter, validScalarPosNum3);
 addParameter(p, 'verbose', verbose, validScalarPosNum4);
-addParameter(p, 'logit', logit, validScalarPosNum4);
+addParameter(p, 'type', type, validString2);
 addParameter(p, 'Alpha', Alpha, validScalarPosNum5);
 
 % parse input arguments
@@ -108,8 +112,8 @@ tol = p.Results.tol;
 max_iter = p.Results.max_iter;
 verbose = p.Results.verbose;
 method = p.Results.method;
-logit = p.Results.logit;
 Alpha = p.Results.Alpha;
+type = p.Results.type;
 
 [N, M] = size(s);
 if N < M
@@ -121,6 +125,20 @@ assert(M == 1 || N == 1, "Input signal must be a column or row vector.")
 s = (s - mean(s)) ./ std(s);
 s = s - min(s);
 s = s ./ max(s); 
+
+% Check whether data distribution is kind of dichotrom
+if strcmp(type,"auto")
+    h = histcounts(s,'NumBins',5);
+    if length(find(h)) > 2
+        logit = false;
+    elseif length(find(h)) <= 2
+        logit = true;
+    end
+elseif strcmp(type,"logit")
+    logit = true;
+elseif strcmp(type,"normal")
+    logit = false;
+end
 
 %% Compute spectrum
 N = length(s);
