@@ -7,7 +7,7 @@
     <param.summary />
     <param.description>Inter Spike Spectra from a sparse regression</param.description>
     <param.screenshot />
-    <param.version>1.4</param.version>
+    <param.version>1.5</param.version>
     <param.output>${PROJECT_ROOT}/InterSpikeSpectra-Matlab.mltbx</param.output>
     <param.products.name />
     <param.products.id />
@@ -33,6 +33,7 @@ private/testing.m
 %
 % All files of a certain name in all subfolders of the toolbox folder:
 private/.asv
+.pages
 %
 % All files matching a pattern in all subfolders of the toolbox folder:
 % **/*.bak
