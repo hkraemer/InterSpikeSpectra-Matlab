@@ -22,29 +22,34 @@ for i = 1:max_iter
         lambda_max = actual_lambda;
     elseif rr(2) < threshold
         lambda_max = actual_lambda;
-        rho_act = rr(2);
     elseif rr(2) > threshold
         lambda_min = actual_lambda;
-        rho_act = rr(2);
     end
+    rho_act = rr(2);
     % check whether max iterations or tolerance-level reached
     if i == max_iter
         if rho_act > 1 - abs_tol
+            if verbose
+                warning("Algorithm stopped due to maximum number of lambda's were tried without convergence to the specified `threshold`. Perfect Decomposition achieved.")
+            end   
             spectrum_i = pool_frequencies(y_act, length(s));
             spectrum_i = spectrum_i ./ sum(spectrum_i); % normalization
             [spectrum, y] = compute_spectrum_according_to_actual_spectrum_stls(spectrum_i, s, Theta, actual_lambda, lambda_maxx);
             rr = corrcoef(regenerate_signal(Theta, y), s);
             rho = rr(2);
-            if verbose
-                warning("Algorithm stopped due to maximum number of lambda's were tried without convergence to the specified `threshold`. Perfect Decomposition achieved.")
-            end            
         else
-            spectrum = pool_frequencies(y_act, length(s));
-            spectrum = spectrum ./ sum(spectrum); % normalization
-            rho = rho_act;
             if verbose
                 warning("Algorithm stopped due to maximum number of lambda's were tried without convergence to the specified `threshold`.")
             end
+            if isnan(rho_act) % account for case where the last iterations yielded a NaN-value
+                y_act(:) = stls(s, Theta, lambda_min);
+                % check whether the regenerated signal matches with the given threshold
+                rr = corrcoef(regenerate_signal(Theta, y_act), s);
+                rho_act = rr(2);
+            end
+            spectrum = pool_frequencies(y_act, length(s));
+            spectrum = spectrum ./ sum(spectrum); % normalization
+            rho = rho_act;
         end
         break
     elseif abs(rho_act - threshold) <= tol
