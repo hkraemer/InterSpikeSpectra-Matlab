@@ -93,7 +93,7 @@ assert(maxis(2) > maxis(1))
 
 %% Test 4: Random time series
 rng(1234)
-tol = 1e-4;
+tol = 1e-3;
 maxcycles = 20;
 s = randn(1,50);
 
@@ -110,7 +110,7 @@ numpeaks2 = length(maxis);
 assert(abs(rho - threshold) <= 1e-3)
 assert(numpeaks2>numpeaks1)
 assert(numpeaks2 == 8)
-assert(numpeaks1 == 4)
+assert(numpeaks1 == 6)
 assert(0.1013 < maxis(1) && maxis(1) < 0.1014)
 assert(0.098 < maxis(2) && maxis(2) < 0.099)
 
