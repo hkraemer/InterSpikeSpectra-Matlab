@@ -13,4 +13,4 @@ The main function to call is `inter_spike_spectrum()`, simply type
 ```matlab
 help inter_spike_spectrum
 ```
-into you MATLAB-IDE and read the documenation including an example how to use it.
+into you MATLAB-IDE and read the documentation including an example how to use it.
