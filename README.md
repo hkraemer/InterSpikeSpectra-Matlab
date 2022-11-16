@@ -1,7 +1,5 @@
 # InterSpikeSpectra for Matlab
 
-[![CI](https://github.com/hkraemer/InterSpikeSpectra.jl/actions/workflows/CI.yml/badge.svg)](https://github.com/hkraemer/InterSpikeSpectra.jl/actions/workflows/CI.yml))]
-
 A MATLAB toolbox for obtaining inter-spike spectra from signals. It is recommended to analyze "spiky" signals with 
 this method. As the authors showed in the corresponding paper (Kraemer et al. 2022, Spike spectra for recurrences) 
 this method can yield reasonable results and insights into $\tau$-recurrence rate signals obtained from 
