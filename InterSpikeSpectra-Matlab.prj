@@ -1,12 +1,12 @@
 <deployment-project plugin="plugin.toolbox" plugin-version="1.0">
-  <configuration file="/Users/hkraemer/Documents/Git/InterSpikeSpectra-Matlab/InterSpikeSpectra-Matlab.prj" location="/Users/hkraemer/Documents/Git/InterSpikeSpectra-Matlab" name="InterSpikeSpectra-Matlab" target="target.toolbox" target-name="Package Toolbox">
+  <configuration file="/Users/hkraemer/Documents/Git Projects/InterSpikeSpectra-Matlab/InterSpikeSpectra-Matlab.prj" location="/Users/hkraemer/Documents/Git Projects/InterSpikeSpectra-Matlab" name="InterSpikeSpectra-Matlab" target="target.toolbox" target-name="Package Toolbox">
     <param.appname>InterSpikeSpectra-Matlab</param.appname>
-    <param.authnamewatermark>K.H.Kraemer</param.authnamewatermark>
-    <param.email>hkraemer@pik-potsdam.de</param.email>
-    <param.company>Potsdam Institute for Climate Impact Resea</param.company>
+    <param.authnamewatermark>Kai Hauke Kraemer</param.authnamewatermark>
+    <param.email>hauke_kraemer@hotmail.com</param.email>
+    <param.company />
     <param.summary />
     <param.description>Inter Spike Spectra from a sparse regression</param.description>
-    <param.screenshot />
+    <param.screenshot>/Users/hkraemer/Desktop/fig_laskar_spectra.png</param.screenshot>
     <param.version>1.6.2</param.version>
     <param.output>${PROJECT_ROOT}/InterSpikeSpectra-Matlab.mltbx</param.output>
     <param.products.name />
@@ -21,7 +21,7 @@
 % A single file in the toolbox folder:
 README.md
 .gitignore
-
+.DS_Store
 %
 % A single file in a subfolder of the toolbox folder:
 private/testing.m
@@ -65,11 +65,8 @@ private/.asv
     <param.additional.sw.mac.url />
     <param.additional.sw.linux.url />
     <unset>
-      <param.authnamewatermark />
-      <param.email />
       <param.company />
       <param.summary />
-      <param.screenshot />
       <param.output />
       <param.products.name />
       <param.products.id />
@@ -104,7 +101,6 @@ private/.asv
       <file>${PROJECT_ROOT}</file>
     </fileset.rootdir>
     <fileset.rootfiles>
-      <file>${PROJECT_ROOT}/.DS_Store</file>
       <file>${PROJECT_ROOT}/.git</file>
       <file>${PROJECT_ROOT}/.github</file>
       <file>${PROJECT_ROOT}/LICENSE</file>
@@ -116,11 +112,11 @@ private/.asv
     <fileset.depfun.excluded />
     <fileset.package />
     <build-deliverables>
-      <file location="${PROJECT_ROOT}" name="InterSpikeSpectra-Matlab.mltbx" optional="false">/Users/hkraemer/Documents/Git/InterSpikeSpectra-Matlab/InterSpikeSpectra-Matlab.mltbx</file>
+      <file location="${PROJECT_ROOT}" name="InterSpikeSpectra-Matlab.mltbx" optional="false">/Users/hkraemer/Documents/Git Projects/InterSpikeSpectra-Matlab/InterSpikeSpectra-Matlab.mltbx</file>
     </build-deliverables>
     <workflow />
     <matlab>
-      <root>/Applications/MATLAB_R2020b.app</root>
+      <root>/Applications/MATLAB_R2022a.app</root>
       <toolboxes>
         <toolbox name="matlabcoder" />
         <toolbox name="neuralnetwork" />
@@ -145,7 +141,7 @@ private/.asv
       <vista>false</vista>
       <linux>false</linux>
       <solaris>false</solaris>
-      <osver>10.16</osver>
+      <osver>12.3</osver>
       <os32>false</os32>
       <os64>true</os64>
       <arch>maci64</arch>
