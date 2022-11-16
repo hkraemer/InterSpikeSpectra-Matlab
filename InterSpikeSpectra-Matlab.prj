@@ -7,7 +7,7 @@
     <param.summary />
     <param.description>Inter Spike Spectra from a sparse regression</param.description>
     <param.screenshot>/Users/hkraemer/Desktop/fig_laskar_spectra.png</param.screenshot>
-    <param.version>1.6.2</param.version>
+    <param.version>1.6.3</param.version>
     <param.output>${PROJECT_ROOT}/InterSpikeSpectra-Matlab.mltbx</param.output>
     <param.products.name />
     <param.products.id />
